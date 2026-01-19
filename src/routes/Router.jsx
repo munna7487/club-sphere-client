@@ -8,13 +8,11 @@ import Privateroute from "./Privateroute";
 import Createclub from "../pages/Createclub";
 import Create from "../pages/Create";
 import Dashboardlayout from "../layouts/Dashboardlayout";
-import Myparcel from "../pages/Auth/Dashboard/my-parcel/Myclub";
 import Myclub from "../pages/Auth/Dashboard/my-parcel/Myclub";
 import Payment from "../pages/Auth/Dashboard/payment/Payment";
-import Paymentsucess from "../pages/Auth/Dashboard/payment/Paymentsucess";
-import Paymentcancelled from "../pages/Auth/Dashboard/payment/Paymentcancelled";
 import PaymentSuccess from "../pages/Auth/Dashboard/payment/Paymentsucess";
-
+import Paymentcancelled from "../pages/Auth/Dashboard/payment/Paymentcancelled";
+import Paymenthistory from "../pages/Auth/Dashboard/Paymenthistory";
 
 export const router = createBrowserRouter([
   {
@@ -26,51 +24,66 @@ export const router = createBrowserRouter([
         Component: Home,
       },
       {
-        path: "/create",
-        element: <Privateroute><Create></Create></Privateroute>,
+        path: "create",
+        element: (
+          <Privateroute>
+            <Create />
+          </Privateroute>
+        ),
       },
       {
-        path: 'club',
-        element: <Privateroute><Createclub></Createclub></Privateroute>
-      }
-
-    ]
+        path: "club",
+        element: (
+          <Privateroute>
+            <Createclub />
+          </Privateroute>
+        ),
+      },
+    ],
   },
   {
-    path: '/',
+    path: "/",
     Component: Authlayout,
     children: [
       {
-        path: 'login',
+        path: "login",
         Component: Login,
       },
       {
-        path: 'register',
+        path: "register",
         Component: Register,
-      }
-    ]
+      },
+    ],
   },
   {
-    path: 'dashboard',
-    element: <Privateroute><Dashboardlayout></Dashboardlayout></Privateroute>,
+    path: "dashboard",
+    element: (
+      <Privateroute>
+        <Dashboardlayout />
+      </Privateroute>
+    ),
     children: [
       {
-        path: 'my-club',
+        path: "my-club",
         Component: Myclub,
       },
       {
-        path: 'payment/:_id',
+        // 🔥 FIXED HERE
+        path: "payment/:id",
         Component: Payment,
       },
       {
-  path: 'payment-success',
-  Component: PaymentSuccess,
-},
-{
-  path: 'payment-cancelled',
-  Component: Paymentcancelled,
-}
-    ]
-  }
-
+        path: "payment-history",
+        Component: Paymenthistory,
+      },
+      {
+        path: "payment-success",
+        Component: PaymentSuccess,
+      },
+      {
+        path: "payment-cancelled",
+        Component: Paymentcancelled,
+      },
+    ],
+  },
 ]);

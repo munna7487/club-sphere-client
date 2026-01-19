@@ -2,7 +2,7 @@ import React from 'react';
 import { FaCcDinersClub } from 'react-icons/fa';
 import { NavLink } from 'react-router';
 import { Link, Outlet } from 'react-router-dom'; // ✅ fixed import
-
+import { MdOutlinePayments } from "react-icons/md";
 const Dashboardlayout = () => {
     return (
         <div>
@@ -47,6 +47,13 @@ const Dashboardlayout = () => {
         <NavLink to="/dashboard/my-club">
         <FaCcDinersClub />
         <span className="is-drawer-close:hidden">My club</span>
+        </NavLink>
+     </li>
+
+      <li className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="payment history">
+        <NavLink to="/dashboard/payment-history">
+       <MdOutlinePayments />
+        <span className="is-drawer-close:hidden">Payment History</span>
         </NavLink>
      </li>
                             {/* List item */}

@@ -2,39 +2,43 @@ import React from 'react';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import Useaxiossecuire from '../../../../hooks/Useaxiossecuire';
-import UseAuth from '../../../../hooks/UseAuth';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-// Stripe publishable key
 const stripePromise = loadStripe('pk_test_XXXX');
 
-const CheckoutForm = ({ club, user }) => {
+const CheckoutForm = ({ club }) => {
   const stripe = useStripe();
   const elements = useElements();
   const axiossecure = Useaxiossecuire();
 
   const handlePayment = async (e) => {
     e.preventDefault();
+
     if (!stripe || !elements) return;
 
-    // ✅ use createremail directly from club
+    if (!club?.membershipFee) {
+      alert("Membership fee missing");
+      return;
+    }
+
     const paymentInfo = {
       _id: club._id,
       clubName: club.clubName,
       membershipFee: club.membershipFee,
-      createremail: club.createremail, // <- default email from MongoDB
+      createremail: club.createremail,
     };
 
-    // Create Stripe Checkout session
-    const res = await axiossecure.post('/create-checkout-session', paymentInfo);
+    const res = await axiossecure.post(
+      '/create-checkout-session',
+      paymentInfo
+    );
 
-    // Redirect to Stripe
     window.location.href = res.data.url;
   };
 
   return (
-    <form onSubmit={handlePayment} className="max-w-md mx-auto p-4 border rounded-lg">
+    <form onSubmit={handlePayment} className="max-w-md mx-auto p-6 border rounded-lg">
       <h2 className="text-xl font-bold mb-4">{club.clubName}</h2>
       <p className="mb-4">Fee: ${club.membershipFee}</p>
 
@@ -45,7 +49,6 @@ const CheckoutForm = ({ club, user }) => {
 
       <button
         type="submit"
-        disabled={!stripe}
         className="w-full py-3 bg-indigo-600 text-white rounded-lg"
       >
         Pay Now
@@ -55,14 +58,15 @@ const CheckoutForm = ({ club, user }) => {
 };
 
 const Payment = () => {
-  const { _id } = useParams();
+  // 🔥🔥🔥 FIX IS HERE
+  const { id } = useParams(); // ❌ _id → ✅ id
   const axiossecure = Useaxiossecuire();
 
   const { data: club = {}, isLoading } = useQuery({
-    queryKey: ['club', _id],
-    enabled: !!_id,
+    queryKey: ['club', id],
+    enabled: !!id,
     queryFn: async () => {
-      const res = await axiossecure.get(`/clubs/${_id}`);
+      const res = await axiossecure.get(`/clubs/${id}`);
       return res.data;
     },
   });

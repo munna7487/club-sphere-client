@@ -47,12 +47,13 @@ const Myclub = () => {
             <img src={club.bannerUrl} className="h-48 w-full object-cover" />
             <div className="p-5 space-y-2">
               <h3 className="text-xl font-semibold">{club.clubName}</h3>
-              <p className="text-sm text-gray-500">{club.description.slice(0, 80)}...</p>
-              <div className="flex justify-between text-sm">
-                <span>📍 {club.location}</span>
-                <span>💼 {club.category}</span>
-              </div>
-              <p className="font-medium text-indigo-600">Fee: ${club.membershipFee}</p>
+              <p className="text-sm text-gray-500">
+                {club.description.slice(0, 80)}...
+              </p>
+
+              <p className="font-medium text-indigo-600">
+                Fee: ${club.membershipFee}
+              </p>
 
               <Link
                 to={`/dashboard/payment/${club._id}`}

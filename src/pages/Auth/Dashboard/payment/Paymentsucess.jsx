@@ -13,14 +13,10 @@ const PaymentSuccess = () => {
       axiossecure
         .patch(`/payment-success?session_id=${sessionId}`)
         .then((res) => {
-          console.log("Payment Success:", res.data);
-
-          // Save payment info to state
-          if (res.data && res.data.paymentinfo) {
+          if (res.data?.paymentinfo) {
             setPaymentInfo(res.data.paymentinfo);
           }
-        })
-        .catch((err) => console.error("Payment Error:", err));
+        });
     }
   }, [sessionId, axiossecure]);
 
@@ -30,16 +26,11 @@ const PaymentSuccess = () => {
         Payment Successful 🎉
       </h2>
 
-      {paymentInfo && (
-        <div className="mb-4">
-          <p>Transaction ID: {paymentInfo.transactionid || "N/A"}</p>
-          <p>User ID: {paymentInfo.userid || "N/A"}</p>
-          <p>Amount Paid: ${paymentInfo.amount || "N/A"}</p>
-        </div>
-      )}
+      <p>Transaction ID: {paymentInfo.transactionid}</p>
+      <p>Amount Paid: ${paymentInfo.amount}</p>
 
       <Link to="/dashboard/my-club">
-        <button className="px-6 py-2 bg-indigo-600 text-white rounded">
+        <button className="px-6 py-2 mt-4 bg-indigo-600 text-white rounded">
           Go Back
         </button>
       </Link>
