@@ -1,9 +1,9 @@
 import React from 'react';
 import { FaCcDinersClub, FaUsers } from 'react-icons/fa';
-import { MdOutlinePayments } from 'react-icons/md';
+import { MdOutlineEmojiEvents, MdOutlinePayments } from 'react-icons/md';
 import { NavLink, Link, Outlet } from 'react-router-dom';
 import Userole from '../hooks/Userole';
-
+import { SiSamsclub } from "react-icons/si";
 const Dashboardlayout = () => {
 
   const { role, isLoading } = Userole();
@@ -66,7 +66,23 @@ const Dashboardlayout = () => {
               Payment History
             </NavLink>
           </li>
+          {/* event */}
+      <li>
+            <NavLink to="/dashboard/event">
+              <MdOutlineEmojiEvents />
+              My Event
+            </NavLink>
+          </li>
 
+          {/* club Management (ADMIN ONLY) */}
+          {
+            role==='admin'&&(<li>
+            <NavLink to="/dashboard/club-management">
+             <SiSamsclub />
+              Club Management
+            </NavLink>
+          </li>)
+          }
           {/* Users Management (ADMIN ONLY) */}
           {role === 'admin' && (
             <li>

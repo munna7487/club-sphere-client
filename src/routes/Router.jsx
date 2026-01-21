@@ -16,6 +16,8 @@ import Paymenthistory from "../pages/Auth/Dashboard/Paymenthistory";
 import {Elements} from '@stripe/react-stripe-js';
 import Usersmanagement from "../pages/Auth/Dashboard/Usersmanagement";
 import Adminroute from "./Adminroute";
+import Clubmanagement from "../pages/Auth/Dashboard/payment/Clubmanagement";
+import Event from "../pages/create/Event";
 
 export const router = createBrowserRouter([
   {
@@ -37,9 +39,9 @@ export const router = createBrowserRouter([
       {
         path: "club",
         element: (
-          <Privateroute>
+         
             <Createclub />
-          </Privateroute>
+         
         ),
       },
     ],
@@ -86,6 +88,16 @@ export const router = createBrowserRouter([
       {
         path: "payment-cancelled",
         Component: Paymentcancelled,
+      },
+      {
+  path: 'event',
+  element: <Event />
+}
+,
+
+      {
+      path:'club-management',
+      element:<Clubmanagement></Clubmanagement>,
       },
       {
         path:"users-management",
