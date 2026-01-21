@@ -15,6 +15,7 @@ import Paymentcancelled from "../pages/Auth/Dashboard/payment/Paymentcancelled";
 import Paymenthistory from "../pages/Auth/Dashboard/Paymenthistory";
 import {Elements} from '@stripe/react-stripe-js';
 import Usersmanagement from "../pages/Auth/Dashboard/Usersmanagement";
+import Adminroute from "./Adminroute";
 
 export const router = createBrowserRouter([
   {
@@ -88,7 +89,7 @@ export const router = createBrowserRouter([
       },
       {
         path:"users-management",
-      element:<Usersmanagement></Usersmanagement>
+      element:<Adminroute><Usersmanagement></Usersmanagement></Adminroute>
       }
     ],
   },

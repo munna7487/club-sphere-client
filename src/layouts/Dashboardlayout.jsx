@@ -1,88 +1,86 @@
 import React from 'react';
-import { FaCcDinersClub, FaUser, FaUsers } from 'react-icons/fa';
-import { NavLink } from 'react-router';
-import { Link, Outlet } from 'react-router-dom'; // ✅ fixed import
-import { MdOutlinePayments } from "react-icons/md";
+import { FaCcDinersClub, FaUsers } from 'react-icons/fa';
+import { MdOutlinePayments } from 'react-icons/md';
+import { NavLink, Link, Outlet } from 'react-router-dom';
+import Userole from '../hooks/Userole';
+
 const Dashboardlayout = () => {
+
+  const { role, isLoading } = Userole();
+
+  // loading state handle
+  if (isLoading) {
     return (
-        <div>
-            <div className="drawer lg:drawer-open">
-                <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content">
-                    {/* Navbar */}
-                    <nav className="navbar w-full bg-base-300">
-                        <label htmlFor="my-drawer-4" aria-label="open sidebar" className="btn btn-square btn-ghost">
-                            {/* Sidebar toggle icon */}
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4">
-                                <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
-                                <path d="M9 4v16"></path>
-                                <path d="M14 10l2 2l-2 2"></path>
-                            </svg>
-                        </label>
-                        <div className="px-4">Club sphere </div>
-                    </nav>
-
-                    {/* Page content here */}
-                    <Outlet></Outlet>
-                </div>
-
-                <div className="drawer-side is-drawer-close:overflow-visible">
-                    <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-                    <div className="flex min-h-full flex-col items-start bg-base-200 is-drawer-close:w-14 is-drawer-open:w-64">
-                        {/* Sidebar content here */}
-                        <ul className="menu w-full grow">
-                            {/* List item */}
-                            <li>
-                                <Link to="/" className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Homepage">
-                                    {/* Home icon */}
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4">
-                                        <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
-                                        <path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                                    </svg>
-                                    <span className="is-drawer-close:hidden">Homepage</span>
-                                </Link>
-                            </li>
-     {/* our dashboard */}
-     <li className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="my club">
-        <NavLink to="/dashboard/my-club">
-        <FaCcDinersClub />
-        <span className="is-drawer-close:hidden">My club</span>
-        </NavLink>
-     </li>
-
-      <li className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="payment history">
-        <NavLink to="/dashboard/payment-history">
-       <MdOutlinePayments />
-        <span className="is-drawer-close:hidden">Payment History</span>
-        </NavLink>
-     </li>
-
-    
-      <li className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="users management">
-        <NavLink to="/dashboard/users-management">
-       <FaUsers />
-        <span className="is-drawer-close:hidden">users management</span>
-        </NavLink>
-     </li>
-                            {/* List item */}
-                            <li>
-                                <button className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="Settings">
-                                    {/* Settings icon */}
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4">
-                                        <path d="M20 7h-9"></path>
-                                        <path d="M14 17H5"></path>
-                                        <circle cx="17" cy="17" r="3"></circle>
-                                        <circle cx="7" cy="7" r="3"></circle>
-                                    </svg>
-                                    <span className="is-drawer-close:hidden">Settings</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <div className="flex justify-center items-center min-h-screen">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
     );
+  }
+
+  return (
+    <div className="drawer lg:drawer-open">
+      <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
+
+      {/* ================= CONTENT ================= */}
+      <div className="drawer-content flex flex-col">
+        {/* Navbar */}
+        <div className="navbar bg-base-300 px-4">
+          <label
+            htmlFor="dashboard-drawer"
+            className="btn btn-ghost btn-square lg:hidden"
+          >
+            ☰
+          </label>
+          <span className="text-lg font-semibold">Club Sphere Dashboard</span>
+        </div>
+
+        {/* Page Content */}
+        <div className="p-4">
+          <Outlet />
+        </div>
+      </div>
+
+      {/* ================= SIDEBAR ================= */}
+      <div className="drawer-side">
+        <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
+
+        <ul className="menu w-64 min-h-full bg-base-200 p-4 gap-1">
+
+          {/* Home */}
+          <li>
+            <Link to="/">🏠 Home</Link>
+          </li>
+
+          {/* My Club */}
+          <li>
+            <NavLink to="/dashboard/my-club">
+              <FaCcDinersClub />
+              My Club
+            </NavLink>
+          </li>
+
+          {/* Payment History */}
+          <li>
+            <NavLink to="/dashboard/payment-history">
+              <MdOutlinePayments />
+              Payment History
+            </NavLink>
+          </li>
+
+          {/* Users Management (ADMIN ONLY) */}
+          {role === 'admin' && (
+            <li>
+              <NavLink to="/dashboard/users-management">
+                <FaUsers />
+                Users Management
+              </NavLink>
+            </li>
+          )}
+
+        </ul>
+      </div>
+    </div>
+  );
 };
 
 export default Dashboardlayout;
