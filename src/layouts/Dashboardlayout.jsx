@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaCcDinersClub } from 'react-icons/fa';
+import { FaCcDinersClub, FaUser, FaUsers } from 'react-icons/fa';
 import { NavLink } from 'react-router';
 import { Link, Outlet } from 'react-router-dom'; // ✅ fixed import
 import { MdOutlinePayments } from "react-icons/md";
@@ -54,6 +54,14 @@ const Dashboardlayout = () => {
         <NavLink to="/dashboard/payment-history">
        <MdOutlinePayments />
         <span className="is-drawer-close:hidden">Payment History</span>
+        </NavLink>
+     </li>
+
+    
+      <li className="is-drawer-close:tooltip is-drawer-close:tooltip-right" data-tip="users management">
+        <NavLink to="/dashboard/users-management">
+       <FaUsers />
+        <span className="is-drawer-close:hidden">users management</span>
         </NavLink>
      </li>
                             {/* List item */}

@@ -13,6 +13,8 @@ import Payment from "../pages/Auth/Dashboard/payment/Payment";
 import PaymentSuccess from "../pages/Auth/Dashboard/payment/Paymentsucess";
 import Paymentcancelled from "../pages/Auth/Dashboard/payment/Paymentcancelled";
 import Paymenthistory from "../pages/Auth/Dashboard/Paymenthistory";
+import {Elements} from '@stripe/react-stripe-js';
+import Usersmanagement from "../pages/Auth/Dashboard/Usersmanagement";
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +86,10 @@ export const router = createBrowserRouter([
         path: "payment-cancelled",
         Component: Paymentcancelled,
       },
+      {
+        path:"users-management",
+      element:<Usersmanagement></Usersmanagement>
+      }
     ],
   },
 ]);
