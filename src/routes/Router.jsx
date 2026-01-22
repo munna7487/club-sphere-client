@@ -18,6 +18,8 @@ import Usersmanagement from "../pages/Auth/Dashboard/Usersmanagement";
 import Adminroute from "./Adminroute";
 import Clubmanagement from "../pages/Auth/Dashboard/payment/Clubmanagement";
 import Event from "../pages/create/Event";
+import DashboardRoute from "./DashboardRoute";
+import Showevent from "../pages/shared/Showevent";
 
 export const router = createBrowserRouter([
   {
@@ -35,6 +37,10 @@ export const router = createBrowserRouter([
             <Create />
           </Privateroute>
         ),
+      },
+      {
+       path:'show-event',
+       element:<Showevent></Showevent>
       },
       {
         path: "club",
@@ -63,9 +69,11 @@ export const router = createBrowserRouter([
   {
     path: "dashboard",
     element: (
-      <Privateroute>
-        <Dashboardlayout />
-      </Privateroute>
+      <DashboardRoute>
+ <Dashboardlayout />
+      </DashboardRoute>
+       
+    
     ),
     children: [
       {

@@ -25,13 +25,14 @@ const Usersmanagement = () => {
   const updateRole = (user, newRole) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `Change role of ${user.displayName}?`,
+      text: `Change role of ${user.displayName} to ${newRole}?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes'
     }).then(result => {
       if (result.isConfirmed) {
-        axiossecure.patch(`/users/${user._id}`, { role: newRole })
+        axiossecure
+          .patch(`/users/${user._id}`, { role: newRole })
           .then(() => refetch());
       }
     });
@@ -41,24 +42,50 @@ const Usersmanagement = () => {
     <table className="table">
       <thead>
         <tr>
-          <th>#</th><th>User</th><th>Email</th><th>Role</th><th>Action</th>
+          <th>#</th>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Action</th>
         </tr>
       </thead>
+
       <tbody>
         {users.map((u, i) => (
           <tr key={u._id}>
             <td>{i + 1}</td>
             <td>{u.displayName}</td>
             <td>{u.email}</td>
-            <td>{u.role}</td>
-            <td>
-              {u.role === 'admin' ? (
-                <button onClick={() => updateRole(u, 'user')} className="btn btn-error btn-sm">
-                  <FaUserSlash />
-                </button>
-              ) : (
-                <button onClick={() => updateRole(u, 'admin')} className="btn btn-success btn-sm">
+            <td className="font-semibold">{u.role}</td>
+
+            <td className="flex gap-2">
+              {u.role !== 'admin' && (
+                <button
+                  onClick={() => updateRole(u, 'admin')}
+                  className="btn btn-success btn-sm"
+                  title="Make Admin"
+                >
                   <FaUserShield />
+                </button>
+              )}
+
+              {u.role !== 'manager' && (
+                <button
+                  onClick={() => updateRole(u, 'manager')}
+                  className="btn btn-info btn-sm"
+                  title="Make Manager"
+                >
+                  M
+                </button>
+              )}
+
+              {u.role !== 'user' && (
+                <button
+                  onClick={() => updateRole(u, 'user')}
+                  className="btn btn-error btn-sm"
+                  title="Make User"
+                >
+                  <FaUserSlash />
                 </button>
               )}
             </td>

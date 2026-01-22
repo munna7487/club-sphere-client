@@ -9,9 +9,7 @@ const Navbar = () => {
   const handlelogout = () => {
     logout()
       .then(() => {})
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log(error));
   };
 
   const links = (
@@ -23,23 +21,16 @@ const Navbar = () => {
         <NavLink to="/club">Clubs</NavLink>
       </li>
       <li>
-        <NavLink to="/events">Events</NavLink>
+        <NavLink to="/show-event">Events</NavLink>
       </li>
-
-      {
-        user && <>
-        <li><NavLink to="/dashboard/my-club">My-Club</NavLink></li>
-        </>
-      }
+      {/* My-Club removed */}
     </>
   );
 
   return (
     <nav className="bg-base-100 w-full shadow-sm">
-      {/* max-width content */}
       <div className="max-w-7xl mx-auto px-4">
         <div className="navbar">
-
           {/* Navbar Start */}
           <div className="navbar-start">
             {/* Mobile Menu */}
