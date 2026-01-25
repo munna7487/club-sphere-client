@@ -39,7 +39,18 @@ const Myclub = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-6">My Clubs ({clubs.length})</h2>
+      {/* akahne kisu add krlm */}
+      <div className='flex justify-between items-center my-4'>
+     <div>
+      <h2 className='text-4xl'>Manage your clubs and memberships</h2>
+     </div>
+     <div>
+           <Link to="/create" className="btn btn-outline px-8 bg-blue-500">
+            Create a Club
+          </Link>
+     </div>
+      </div> 
+      <h2 className="text-2xl font-bold mb-6 my-4">My Clubs ({clubs.length})</h2>
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {clubs.map((club) => (

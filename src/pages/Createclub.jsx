@@ -1,100 +1,195 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Useaxiossecuire from '../hooks/Useaxiossecuire';
-
+import { Link } from 'react-router';
 
 const Createclub = () => {
   const axiossecure = Useaxiossecuire();
 
-  const { data: clubs = [], isLoading } = useQuery({
+  const [searchText, setSearchText] = useState('');
+  const [selectedClubName, setSelectedClubName] = useState('All');
+
+  const { data: clubs = [], isLoading, isError } = useQuery({
     queryKey: ['approved-clubs'],
     queryFn: async () => {
       const res = await axiossecure.get('/approved-clubs');
       return res.data;
-    }
+    },
   });
 
   if (isLoading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return (
+      <div className="text-center py-20">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+        <p className="mt-4">Loading clubs...</p>
+      </div>
+    );
   }
- 
+
+  if (isError || !clubs) {
+    return (
+      <div className="text-center py-10 text-error">
+        Failed to load clubs. Please try again.
+      </div>
+    );
+  }
+
+  // Get unique club names for dropdown
+  const clubNames = clubs
+    .map(club => club.clubName?.trim())
+    .filter(Boolean); // remove empty/falsey values
+
+  // Filter logic
+  let filteredClubs = clubs.filter(club => {
+    // Search filter (on club name)
+    const matchesSearch = club.clubName
+      ?.toLowerCase()
+      .includes(searchText.toLowerCase().trim());
+
+    // Club selection filter
+    const matchesSelected =
+      selectedClubName === 'All' ||
+      club.clubName === selectedClubName;
+
+    return matchesSearch && matchesSelected;
+  });
+
   return (
-    <div>
-      <div className='flex justify-between items-center my-6'>
-        <div className=''>
-          <h3 className='text-cyan-600 text-4xl font-bold'>Explore Clubs</h3>
-    <h2 className='text-2xl'>Find your next community</h2>
+    <div className="container mx-auto px-4 py-8">
+      {/* Header + Filters */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+        <div>
+          <h3 className="text-cyan-600 text-3xl md:text-4xl font-bold">
+            Explore Clubs
+          </h3>
+          <p className="text-lg md:text-xl text-base-content/70 mt-1">
+            Find your next community
+          </p>
         </div>
-        <div className='flex justify-between items-center'>
-          <div><label className="input">
-            <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <g
-                strokeLinejoin="round"
-                strokeLinecap="round"
-                strokeWidth="2.5"
-                fill="none"
-                stroke="currentColor"
-              >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.3-4.3"></path>
-              </g>
+
+        {/* Search + Club Name Dropdown */}
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+          {/* Search Input */}
+          <label className="input input-bordered flex items-center gap-2 w-full sm:w-64">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-5 h-5 opacity-70"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z"
+                clipRule="evenodd"
+              />
             </svg>
-            <input type="search" required placeholder="Search" />
-          </label></div>
-          <div><div className="dropdown dropdown-center">
-            <div tabIndex={0} role="button" className="btn m-1">Click  ⬇️</div>
-            <ul tabIndex="-1" className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm">
-              <li><a>Item 1</a></li>
-              <li><a>Item 2</a></li>
+            <input
+              type="search"
+              className="grow"
+              placeholder="Search clubs..."
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
+          </label>
+
+          {/* Club Name Dropdown */}
+          <div className="dropdown dropdown-end w-full sm:w-auto">
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn btn-outline w-full sm:w-64 justify-between"
+            >
+              {selectedClubName}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 ml-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-64 max-h-80 overflow-auto z-50"
+            >
+              <li>
+                <button onClick={() => setSelectedClubName('All')}>
+                  All
+                </button>
+              </li>
+              {clubNames.map((name) => (
+                <li key={name}>
+                  <button onClick={() => setSelectedClubName(name)}>
+                    {name}
+                  </button>
+                </li>
+              ))}
             </ul>
-          </div></div>
+          </div>
         </div>
       </div>
-      <h1 className="text-2xl font-bold mb-6">Approved Clubs</h1>
 
-      {clubs.length === 0 ? (
-        <p className="text-gray-500">No approved clubs found</p>
+      {/* Clubs Display */}
+      {filteredClubs.length === 0 ? (
+        <div className="text-center py-16">
+          <p className="text-xl text-base-content/70">
+            No clubs found
+          </p>
+          <p className="mt-2 text-sm">
+            {searchText || selectedClubName !== 'All'
+              ? 'Try different search or select another club'
+              : 'No approved clubs available right now'}
+          </p>
+        </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {clubs.map((club) => (
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filteredClubs.map((club) => (
             <div
               key={club._id}
-              className="card bg-base-100 shadow-md hover:shadow-xl transition"
+              className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 border border-base-200"
             >
-              {/* IMAGE */}
-              <figure className="h-48 overflow-hidden">
+              <figure className="relative h-48 overflow-hidden">
                 <img
-                  src={club.bannerUrl}
+                  src={club.bannerUrl || 'https://via.placeholder.com/400x200?text=Club+Banner'}
                   alt={club.clubName}
-                  className="h-full w-full object-cover"
+                  className="w-full h-full object-cover"
                 />
               </figure>
+              <div className="card-body p-5">
+                <h2 className="card-title text-xl line-clamp-2">
+                  {club.clubName}
+                </h2>
 
-              {/* BODY */}
-              <div className="card-body">
-                <h2 className="card-title text-lg">{club.clubName}</h2>
-
-                <p className="text-sm text-gray-600 line-clamp-3">
-                  {club.description}
+                <p className="text-sm text-base-content/70 line-clamp-3 min-h-[4.5rem]">
+                  {club.description || 'No description available'}
                 </p>
 
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <span className="badge badge-outline">
-                    {club.category}
-                  </span>
-                  <span className="badge badge-outline">
-                    {club.location}
-                  </span>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {club.category && (
+                    <div className="badge badge-outline badge-sm">{club.category}</div>
+                  )}
+                  {club.location && (
+                    <div className="badge badge-outline badge-sm">{club.location}</div>
+                  )}
                 </div>
 
-                <p className="mt-2 font-semibold text-primary">
-                  Membership Fee: ${club.membershipFee}
-                </p>
-
-                <div className="mt-3">
-                  <span className="badge badge-success">
-                    Approved
-                  </span>
+                <div className="mt-4 flex items-center justify-between">
+                  <p className="font-semibold text-primary">
+                    ${club.membershipFee || 0}
+                  </p>
+                  <div className="badge badge-success badge-outline">Approved</div>
+                </div>
+                <div>
+                  <Link to={`/club/${club._id}`}>
+  <div className="card ..."> Card details
+    {/* card content */}
+  </div>
+</Link>
                 </div>
               </div>
             </div>

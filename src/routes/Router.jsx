@@ -23,6 +23,7 @@ import Showevent from "../pages/shared/Showevent";
 import EventPayment from "../pages/create/EventPayment";
 import EventPaymentSuccess from "../pages/create/EventPaymentSuccess";
 import Myallevent from "../pages/create/Myallevent";
+import Clubdetails from "../pages/Clubdetails";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
           </Privateroute>
         ),
       },
+      {
+  path: "club/:id",
+  element: <Clubdetails />
+},
       {
        path:'show-event',
        element:<Showevent></Showevent>
