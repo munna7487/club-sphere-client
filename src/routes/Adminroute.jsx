@@ -1,28 +1,25 @@
-import React from 'react';
-import UseAuth from '../hooks/UseAuth';
-import Userole from '../hooks/Userole';
-import { useLocation } from 'react-router';
+import { Navigate, useLocation } from "react-router-dom";
+import UseAuth from "../hooks/UseAuth";
+import Userole from "../hooks/Userole";
 
-// Simple Loading component
-const Loading = () => <div>Loading...</div>;
+const Adminroute = ({ children }) => {
+  const { user, loading } = UseAuth();
+  const { role, roleloading } = Userole();
+  const location = useLocation();
 
-// Simple Forbidden component
-const Forbidden = () => <div>🚫 Forbidden: You are not an admin</div>;
+  if (loading || roleloading) {
+    return <div>Loading...</div>;
+  }
 
-const Adminroute = ({ children }) => {  // ✅ children destructure
-    const { user, loading } = UseAuth();
-    const { role, isLoading: roleloading } = Userole();  // ✅ role loading fix
-    const location = useLocation();
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
-    if (loading || roleloading) {
-        return <Loading />;  // ✅ fix invalid <loading>
-    }
+  if (role !== "admin") {
+    return <div>🚫 Forbidden: Admin only</div>;
+  }
 
-    if (role !== 'admin') {
-        return <Forbidden />;  // ✅ fix invalid <Forbidden>
-    }
-
-    return children;
+  return children;
 };
 
 export default Adminroute;

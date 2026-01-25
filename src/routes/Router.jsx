@@ -20,6 +20,9 @@ import Clubmanagement from "../pages/Auth/Dashboard/payment/Clubmanagement";
 import Event from "../pages/create/Event";
 import DashboardRoute from "./DashboardRoute";
 import Showevent from "../pages/shared/Showevent";
+import EventPayment from "../pages/create/EventPayment";
+import EventPaymentSuccess from "../pages/create/EventPaymentSuccess";
+import Myallevent from "../pages/create/Myallevent";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +45,19 @@ export const router = createBrowserRouter([
        path:'show-event',
        element:<Showevent></Showevent>
       },
+      {
+  path: "event-payment/:id",
+  element: (
+    <Privateroute>
+      <EventPayment />
+    </Privateroute>
+  ),
+},
+{
+  path: "event-payment-success",
+  element: <EventPaymentSuccess />,
+},
+
       {
         path: "club",
         element: (
@@ -102,6 +118,10 @@ export const router = createBrowserRouter([
   element: <Event />
 }
 ,
+{
+  path:'my-all-event',
+  element:<Myallevent></Myallevent>
+},
 
       {
       path:'club-management',

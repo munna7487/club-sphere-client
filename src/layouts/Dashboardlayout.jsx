@@ -67,10 +67,16 @@ const Dashboardlayout = () => {
             </NavLink>
           </li>
           {/* event */}
-      <li>
+      {/* <li>
             <NavLink to="/dashboard/event">
               <MdOutlineEmojiEvents />
               My Event
+            </NavLink>
+          </li> */}
+      <li>
+            <NavLink to="/dashboard/my-all-event">
+              <MdOutlineEmojiEvents />
+              My all Event
             </NavLink>
           </li>
 
