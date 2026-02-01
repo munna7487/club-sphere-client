@@ -23,7 +23,7 @@ const PaymentSuccess = () => {
   return (
     <div className="text-center mt-10">
       <h2 className="text-2xl font-bold text-green-600 mb-4">
-        Payment Successful 🎉
+        Payment Successful 
       </h2>
 
       <p>Transaction ID: {paymentInfo.transactionid}</p>

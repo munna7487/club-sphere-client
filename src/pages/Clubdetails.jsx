@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Useaxiossecuire from '../hooks/Useaxiossecuire';
 
 const Clubdetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const axiossecure = Useaxiossecuire();
+
   const [club, setClub] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +16,7 @@ const Clubdetails = () => {
       try {
         const clubRes = await axiossecure.get(`/clubs/${id}`);
         setClub(clubRes.data);
+
         const eventsRes = await axiossecure.get(`/clubs/${id}/events`);
         setEvents(eventsRes.data);
       } catch (err) {
@@ -97,7 +100,6 @@ const Clubdetails = () => {
             <div className="card bg-base-100 shadow-xl border border-base-200">
               <div className="card-body p-6 md:p-8">
                 <h2 className="card-title text-3xl font-bold mb-6">Upcoming Events</h2>
-
                 {events.length === 0 ? (
                   <div className="alert alert-info shadow-lg">
                     <span>No upcoming events scheduled for this club yet.</span>
@@ -116,7 +118,6 @@ const Clubdetails = () => {
                           <p className="text-base-content/70 mt-2 line-clamp-3">
                             {event.description}
                           </p>
-
                           <div className="mt-4 space-y-2 text-sm">
                             <p className="flex items-center gap-2">
                               <span className="badge badge-outline badge-sm">Date</span>
@@ -137,7 +138,6 @@ const Clubdetails = () => {
                               {event.eventType}
                             </p>
                           </div>
-
                           <div className="card-actions mt-6">
                             <button className="btn btn-primary btn-block">
                               Register Now
@@ -157,7 +157,6 @@ const Clubdetails = () => {
             <div className="card bg-base-100 shadow-xl border border-base-200 sticky top-8">
               <div className="card-body p-6">
                 <h3 className="text-2xl font-bold mb-4">Membership</h3>
-
                 <div className="stats shadow bg-base-200 stats-vertical lg:stats-horizontal">
                   <div className="stat place-items-center">
                     <div className="stat-title">Annual Fee</div>
@@ -170,9 +169,11 @@ const Clubdetails = () => {
                     <div className="stat-desc">active hikers</div>
                   </div>
                 </div>
-
                 <div className="mt-6">
-                  <button className="btn btn-secondary btn-lg w-full">
+                  <button
+                    onClick={() => navigate(`/club/${id}/payment`)}
+                    className="btn btn-secondary btn-lg w-full"
+                  >
                     Join for ${club.membershipFee}
                   </button>
                   <p className="text-center text-xs text-base-content/60 mt-3">

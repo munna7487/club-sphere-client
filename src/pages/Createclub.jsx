@@ -186,7 +186,7 @@ const Createclub = () => {
                 </div>
                 <div>
                   <Link to={`/club/${club._id}`}>
-  <div className="card ..."> Card details
+  <div className="card ... btn"> Card details
     {/* card content */}
   </div>
 </Link>

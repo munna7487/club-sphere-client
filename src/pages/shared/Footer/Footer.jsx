@@ -40,7 +40,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* ✅ Connect (FIXED ICONS) */}
+          {/*  Connect (FIXED ICONS) */}
           <div>
             <h3 className="text-white font-semibold mb-4 uppercase text-sm">Connect</h3>
             <div className="flex gap-5 text-2xl text-gray-300">

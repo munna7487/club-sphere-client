@@ -58,8 +58,8 @@ const CheckoutForm = ({ club }) => {
 };
 
 const Payment = () => {
-  // 🔥🔥🔥 FIX IS HERE
-  const { id } = useParams(); // ❌ _id → ✅ id
+  
+  const { id } = useParams(); 
   const axiossecure = Useaxiossecuire();
 
   const { data: club = {}, isLoading } = useQuery({

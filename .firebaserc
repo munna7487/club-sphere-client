@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "clubsphere-web-2026"
-  }
+    "default": "club-sphere-11e4b"
+  },
+  "targets": {},
+  "etags": {}
 }

@@ -31,16 +31,20 @@ const Myallevent = () => {
    <div>
 
      <div className="p-6">
+
       <div className="flex justify-between mb-6 items-center">
+
        <div>
+
          <h2 className="text-4xl font-bold">Events Management</h2>
-              <h2 className="text-3xl">Create and manage events for your clubs</h2>
+              <h2 className="text-3xl">Create and manage events for 
+                your clubs</h2>
        </div>
        <div> <Link
           to="/dashboard/event"
           className="bg-green-600 text-white px-4 py-2 rounded"
         >
-          Create Event
+          Create Event 
         </Link></div>
       </div>
     </div>
@@ -61,10 +65,11 @@ const Myallevent = () => {
               <span className="badge badge-info mt-2">{event.status}</span>
 
               <div className="flex flex-col gap-2 mt-4">
-                <button
+                <button 
                   onClick={() => handleDelete(event._id)}
-                  className="w-full bg-red-500 text-white py-2 rounded-lg"
-                >
+                  className="w-full bg-red-500 text-white py-2
+                   rounded-lg"
+                >   
                   Delete Event
                 </button>
               </div>

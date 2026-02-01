@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import Useaxiossecuire from '../../hooks/Useaxiossecuire';
 
 const Showevent = () => {
   const axiosSecure = Useaxiossecuire();
   const navigate = useNavigate();
 
-  // 🔍 SEARCH STATE
+  // search state
   const [searchText, setSearchText] = useState('');
   const [searchValue, setSearchValue] = useState('');
 
-  // ⏳ debounce (ONLY update searchValue)
+  // debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchValue(searchText);
@@ -21,7 +20,7 @@ const Showevent = () => {
     return () => clearTimeout(timer);
   }, [searchText]);
 
-  // ================= GET EVENTS =================
+  // fetch events
   const {
     data: events = [],
     refetch,
@@ -29,63 +28,33 @@ const Showevent = () => {
   } = useQuery({
     queryKey: ['events', searchValue],
     queryFn: async () => {
-      const res = await axiosSecure.get(
-        `/events?search=${searchValue}`
-      );
+      const res = await axiosSecure.get(`/events?search=${searchValue}`);
       return res.data;
     },
-    enabled: false, // 🔥 IMPORTANT: auto query OFF
-    keepPreviousData: true, // 🔥 cursor stable
+    enabled: false,               // manually control when to fetch
+    keepPreviousData: true,
   });
 
-  // 🔁 manually refetch when debounced value changes
+  // refetch when debounced search value changes
   useEffect(() => {
     refetch();
   }, [searchValue, refetch]);
 
-  // ================= REGISTER EVENT =================
-  const registerEvent = useMutation({
-    mutationFn: async (info) => {
-      const res = await axiosSecure.post('/event-register', info);
-      return res.data;
-    },
-    onSuccess: (data) => {
-      if (data?.message) {
-        Swal.fire('Oops!', data.message, 'info');
-      } else {
-        Swal.fire('Success 🎉', 'Registered Successfully', 'success');
-        refetch();
-      }
-    },
-  });
-
-  // ================= HANDLE REGISTER =================
-  const handleRegister = (event) => {
-    if (event.eventType === 'Paid') {
-      navigate(`/event-payment/${event._id}`);
-      return;
-    }
-
-    registerEvent.mutate({
-      eventId: event._id,
-      eventTitle: event.title,
-    });
-  };
-
   return (
     <div className="max-w-6xl mx-auto p-6">
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <div className="my-4">
-          <h4 className="text-4xl font-bold my-2">Upcoming Events</h4>
-          <h2 className="text-xl">Don't miss out on what's happening</h2>
+      {/* Header + Search */}
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h4 className="text-4xl font-bold mb-2">Upcoming Events</h4>
+          <h2 className="text-xl text-gray-600">
+            Don't miss out on what's happening
+          </h2>
         </div>
 
-        {/* 🔍 SEARCH INPUT */}
         <div>
           <input
             type="search"
-            className="input input-bordered"
+            className="input input-bordered w-64"
             placeholder="Search by event title..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -93,43 +62,57 @@ const Showevent = () => {
         </div>
       </div>
 
+      {/* Title with count */}
       <h2 className="text-3xl font-bold mb-6">
         All Events ({events.length})
       </h2>
 
+      {/* Loading indicator */}
       {isFetching && (
-        <p className="text-sm text-gray-400 mb-4">Searching...</p>
+        <p className="text-sm text-gray-500 mb-6">Searching events...</p>
       )}
 
-      {/* EVENTS GRID */}
-      {events.length === 0 ? (
-        <p className="text-gray-500">No events found</p>
+      {/* No events found */}
+      {events.length === 0 && !isFetching ? (
+        <p className="text-center text-gray-500 py-10">
+          No events found
+        </p>
       ) : (
-        <div className="grid md:grid-cols-3 gap-6">
+        /* Events grid */
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {events.map((event) => (
-            <div key={event._id} className="card bg-base-100 shadow-xl">
+            <div
+              key={event._id}
+              className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
+              onClick={() => navigate(`/event/${event._id}`)}
+            >
               <div className="card-body">
-                <h2 className="card-title">{event.title}</h2>
+                <h2 className="card-title line-clamp-2">{event.title}</h2>
+
                 <p className="text-sm text-gray-500">{event.clubName}</p>
-                <p>{event.description}</p>
-                <p className="text-sm">📍 {event.location}</p>
-                <p className="text-sm">
-                  🕒 {new Date(event.dateTime).toLocaleString()}
-                </p>
-                <p className="font-semibold">
+
+                <p className="text-sm line-clamp-3">{event.description}</p>
+
+                <div className="text-sm mt-2 space-y-1">
+                  <p>📍 {event.location}</p>
+                  <p>🕒 {new Date(event.dateTime).toLocaleString()}</p>
+                </div>
+
+                <p className="font-semibold mt-2">
                   {event.eventType === 'Free'
                     ? 'Free'
                     : `$${event.price}`}
                 </p>
 
-                <div className="card-actions justify-end">
+                <div className="card-actions justify-end mt-4">
                   <button
-                    onClick={() => handleRegister(event)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // prevent card click when button is clicked
+                      navigate(`/event/${event._id}`);
+                    }}
                     className="btn btn-primary btn-sm"
                   >
-                    {event.eventType === 'Free'
-                      ? 'Register'
-                      : 'Pay & Register'}
+                    Details
                   </button>
                 </div>
               </div>

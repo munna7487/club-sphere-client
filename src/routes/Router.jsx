@@ -24,6 +24,8 @@ import EventPayment from "../pages/create/EventPayment";
 import EventPaymentSuccess from "../pages/create/EventPaymentSuccess";
 import Myallevent from "../pages/create/Myallevent";
 import Clubdetails from "../pages/Clubdetails";
+import Showdetailsevent from "../pages/shared/Showdetailsevent";
+import Clubpayment from "../pages/Auth/Dashboard/payment/Clubpayment";
 
 export const router = createBrowserRouter([
   {
@@ -44,12 +46,26 @@ export const router = createBrowserRouter([
       },
       {
   path: "club/:id",
-  element: <Clubdetails />
+  element: <Privateroute>
+    <Clubdetails />
+  </Privateroute>
 },
+{
+        path: "club/:id/payment",   // ← এটা যোগ করুন
+        element: (
+          <Privateroute>            // লগইন না থাকলে লগইন পেজে যাবে
+            <Clubpayment />
+          </Privateroute>
+        ),
+      },
       {
        path:'show-event',
        element:<Showevent></Showevent>
       },
+     {
+  path: "event/:id",           // ← এটাই ভালো ও স্ট্যান্ডার্ড
+  element: <Showdetailsevent />
+},
       {
   path: "event-payment/:id",
   element: (
@@ -71,7 +87,7 @@ export const router = createBrowserRouter([
          
         ),
       },
-    ],
+   6 ],
   },
   {
     path: "/",
@@ -102,7 +118,7 @@ export const router = createBrowserRouter([
         Component: Myclub,
       },
       {
-        // 🔥 FIXED HERE
+       
         path: "payment/:id",
         Component: Payment,
       },

@@ -29,6 +29,8 @@ const Paymenthistory = () => {
         <div key={p._id} className="border p-3 mb-2 rounded">
           <p>Club: {p.clubname}</p>
           <p>Amount: ${p.amount}</p>
+
+          
           <p>Status: {p.paymentstatus}</p>
           <p>Transaction: {p.transactionid}</p>
         </div>
