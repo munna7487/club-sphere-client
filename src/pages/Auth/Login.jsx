@@ -5,14 +5,20 @@ import { Link, useLocation, useNavigate } from 'react-router';
 import SocialLogin from './SocialLogin';
 
 const Login = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const { signinuser } = UseAuth();
+
+    // 🔴 CHANGE 1: watch add করা হয়েছে email ধরার জন্য
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+
+    // 🔴 CHANGE 2: resetPassword নেওয়া হয়েছে
+    const { signinuser, resetPassword } = UseAuth();
 
     const location = useLocation();
     const navigate = useNavigate();
 
-    // PrivateRoute থেকে আসা path
     const from = location.state?.from?.pathname || '/';
+
+    // 🔴 CHANGE 3: email value ধরা
+    const email = watch('email');
 
     const handlelogin = (data) => {
         signinuser(data.email, data.password)
@@ -25,10 +31,26 @@ const Login = () => {
             });
     };
 
+    // 🔴 CHANGE 4: forgot password handler
+    const handleForgotPassword = () => {
+        if (!email) {
+            alert('আগে email লিখো');
+            return;
+        }
+
+        resetPassword(email)
+            .then(() => {
+                alert('Password reset email পাঠানো হয়েছে 📩');
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    };
+
     return (
         <div className="flex justify-center items-center min-h-screen">
             <div className="card bg-base-100 w-full max-w-sm shadow-2xl">
-                
+
                 <h3 className="text-blue-600 text-3xl text-center mt-4">
                     Welcome Back
                 </h3>
@@ -78,8 +100,15 @@ const Login = () => {
                             </p>
                         )}
 
+                        {/* 🔴 CHANGE 5: anchor বাদ দিয়ে button + onClick */}
                         <div>
-                            <a className="link link-hover">Forgot password?</a>
+                            <button
+                                type="button"
+                                onClick={handleForgotPassword}
+                                className="link link-hover"
+                            >
+                                Forgot password?
+                            </button>
                         </div>
 
                         <button type="submit" className="btn btn-neutral mt-4">

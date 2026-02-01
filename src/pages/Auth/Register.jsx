@@ -22,54 +22,54 @@ const Register = () => {
     const from = location.state?.from?.pathname || '/';
 
     const handleregistration = (data) => {
-  const profileimg = data.photo[0];
+        const profileimg = data.photo[0];
 
-  registeruser(data.email, data.password)
-    .then(result => {
-      console.log(result.user);
+        registeruser(data.email, data.password)
+            .then(result => {
+                console.log(result.user);
 
-      const formdata = new FormData();
-      formdata.append('image', profileimg);
+                const formdata = new FormData();
+                formdata.append('image', profileimg);
 
-      const image_api_url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_img}`;
+                const image_api_url = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_img}`;
 
-      axios.post(image_api_url, formdata)
-        .then(res => {
-          console.log('after image load', res.data.data.url);
+                axios.post(image_api_url, formdata)
+                    .then(res => {
+                        console.log('after image load', res.data.data.url);
 
-          // create user in database
-          const userinfo = {
-            email: data.email, // ✅ fixed
-            displayName: data.name,
-            photoURL: res.data.data.url
-          };
+                        // create user in database
+                        const userinfo = {
+                            email: data.email, // ✅ fixed
+                            displayName: data.name,
+                            photoURL: res.data.data.url
+                        };
 
-          axios.post('http://localhost:3000/users', userinfo)
-            .then(res => {
-              if (res.data.insertedId) { // ✅ fixed spelling
-                console.log('user is created');
-              }
-            });
+                        axios.post('https://club-sphere-server-flax.vercel.app/users', userinfo)
+                            .then(res => {
+                                if (res.data.insertedId) { // ✅ fixed spelling
+                                    console.log('user is created');
+                                }
+                            });
 
-          const userprofile = {
-            displayName: data.name,
-            photoURL: res.data.data.url
-          };
+                        const userprofile = {
+                            displayName: data.name,
+                            photoURL: res.data.data.url
+                        };
 
-          updateuserprofile(userprofile)
-            .then(() => {
-              console.log('user profile updated done');
-              navigate(from, { replace: true });
+                        updateuserprofile(userprofile)
+                            .then(() => {
+                                console.log('user profile updated done');
+                                navigate(from, { replace: true });
+                            })
+                            .catch(error => {
+                                console.log(error);
+                            });
+                    });
             })
             .catch(error => {
-              console.log(error);
+                console.log(error);
             });
-        });
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
+    };
 
 
     return (

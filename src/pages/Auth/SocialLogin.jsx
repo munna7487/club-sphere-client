@@ -1,6 +1,6 @@
 import React from 'react';
 import UseAuth from '../../hooks/UseAuth';
-import { useLocation, useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Useaxiossecuire from '../../hooks/Useaxiossecuire';
 
 const SocialLogin = () => {
@@ -9,7 +9,6 @@ const SocialLogin = () => {
   const navigate = useNavigate();
   const axiossecure = Useaxiossecuire();
 
-  // PrivateRoute থেকে আসা path
   const from = location.state?.from?.pathname || '/';
 
   const handlesignin = () => {
@@ -17,17 +16,18 @@ const SocialLogin = () => {
       .then(result => {
         const user = result.user;
 
-        // create user in database
         const userinfo = {
           email: user.email,
-          displayName: user.displayName, // ✅ fixed
-          photoURL: user.photoURL        // ✅ fixed
+          displayName: user.displayName,
+          photoURL: user.photoURL
         };
 
+        // 🔥 DB save try করবে, fail হলেও সমস্যা নাই
         axiossecure.post('/users', userinfo)
-          .then(() => {
-            navigate(from, { replace: true });
-          });
+          .catch(err => console.log('User save error:', err));
+
+        // ✅ Google login successful হলেই Home page
+        navigate(from, { replace: true });
       })
       .catch(error => {
         console.log(error);

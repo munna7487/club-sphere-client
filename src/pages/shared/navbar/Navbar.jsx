@@ -1,5 +1,6 @@
 import React from "react";
 import logo from "../../../assets/club-55.jpg";
+import logos from "../../../assets/logo001.jpg";
 import { Link, NavLink } from "react-router-dom";
 import UseAuth from "../../../hooks/UseAuth";
 
@@ -60,7 +61,7 @@ const Navbar = () => {
             </div>
 
             {/* Logo */}
-            <img className="h-10 w-10 rounded-full" src={logo} alt="logo" />
+            <img className="h-10 w-10 rounded-full" src={logos} alt="logo" />
           </div>
 
           {/* Navbar Center */}
