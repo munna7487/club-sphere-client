@@ -1,4 +1,5 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router-dom";
+
 import Rootlayout from "../layouts/Rootlayout";
 import Home from "../pages/Home/home/Home";
 import Authlayout from "../layouts/Authlayout";
@@ -13,7 +14,6 @@ import Payment from "../pages/Auth/Dashboard/payment/Payment";
 import PaymentSuccess from "../pages/Auth/Dashboard/payment/Paymentsucess";
 import Paymentcancelled from "../pages/Auth/Dashboard/payment/Paymentcancelled";
 import Paymenthistory from "../pages/Auth/Dashboard/Paymenthistory";
-import {Elements} from '@stripe/react-stripe-js';
 import Usersmanagement from "../pages/Auth/Dashboard/Usersmanagement";
 import Adminroute from "./Adminroute";
 import Clubmanagement from "../pages/Auth/Dashboard/payment/Clubmanagement";
@@ -26,15 +26,17 @@ import Myallevent from "../pages/create/Myallevent";
 import Clubdetails from "../pages/Clubdetails";
 import Showdetailsevent from "../pages/shared/Showdetailsevent";
 import Clubpayment from "../pages/Auth/Dashboard/payment/Clubpayment";
+import ClubPaymentSuccess from "../pages/Auth/Dashboard/payment/ClubPaymentSuccess";
+import Clubpaymentcancelled from "../pages/Auth/Dashboard/payment/Clubpaymentcancelled";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    Component: Rootlayout,
+    element: <Rootlayout />,
     children: [
       {
         index: true,
-        Component: Home,
+        element: <Home />,
       },
       {
         path: "create",
@@ -45,113 +47,129 @@ export const router = createBrowserRouter([
         ),
       },
       {
-  path: "club/:id",
-  element: <Privateroute>
-    <Clubdetails />
-  </Privateroute>
-},
-{
-        path: "club/:id/payment",   // ← এটা যোগ করুন
+        path: "club",
+        element: <Createclub />, // approved clubs list
+      },
+      {
+        path: "club/:id",
         element: (
-          <Privateroute>            // লগইন না থাকলে লগইন পেজে যাবে
+          <Privateroute>
+            <Clubdetails />
+          </Privateroute>
+        ),
+      },
+      {
+        path: "club/:id/payment",
+        element: (
+          <Privateroute>
             <Clubpayment />
           </Privateroute>
         ),
       },
       {
-       path:'show-event',
-       element:<Showevent></Showevent>
+        path: "show-event",
+        element: <Showevent />,
       },
-     {
-  path: "event/:id",           // ← এটাই ভালো ও স্ট্যান্ডার্ড
-  element: <Showdetailsevent />
-},
       {
-  path: "event-payment/:id",
-  element: (
-    <Privateroute>
-      <EventPayment />
-    </Privateroute>
-  ),
-},
-{
-  path: "event-payment-success",
-  element: <EventPaymentSuccess />,
-},
-
+        path: "event/:id",
+        element: <Showdetailsevent />,
+      },
       {
-        path: "club",
+        path: "event-payment/:id",
         element: (
-         
-            <Createclub />
-         
+          <Privateroute>
+            <EventPayment />
+          </Privateroute>
         ),
       },
-   6 ],
-  },
-  {
-    path: "/",
-    Component: Authlayout,
-    children: [
       {
-        path: "login",
-        Component: Login,
+        path: "event-payment-success",
+        element: <EventPaymentSuccess />,
       },
       {
-        path: "register",
-        Component: Register,
+        path: "club-payment-success",
+        element: <ClubPaymentSuccess />,
+      },
+      {
+        path: "club-payment-cancelled",
+        element: <Clubpaymentcancelled />,
       },
     ],
   },
+
+  {
+    path: "/",
+    element: <Authlayout />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      },
+    ],
+  },
+
   {
     path: "dashboard",
     element: (
       <DashboardRoute>
- <Dashboardlayout />
+        <Dashboardlayout />
       </DashboardRoute>
-       
-    
     ),
     children: [
       {
         path: "my-club",
-        Component: Myclub,
+        element: <Myclub />,
       },
       {
-       
         path: "payment/:id",
-        Component: Payment,
+        element: <Payment />,
       },
       {
         path: "payment-history",
-        Component: Paymenthistory,
+        element: <Paymenthistory />,
       },
       {
         path: "payment-success",
-        Component: PaymentSuccess,
+        element: <PaymentSuccess />,
       },
       {
         path: "payment-cancelled",
-        Component: Paymentcancelled,
+        element: <Paymentcancelled />,
       },
       {
-  path: 'event',
-  element: <Event />
-}
-,
-{
-  path:'my-all-event',
-  element:<Myallevent></Myallevent>
-},
-
-      {
-      path:'club-management',
-      element:<Clubmanagement></Clubmanagement>,
+        path: "event",
+        element: <Event />,
       },
       {
-        path:"users-management",
-      element:<Adminroute><Usersmanagement></Usersmanagement></Adminroute>
-      }
+        path: "my-all-event",
+        element: <Myallevent />,
+      },
+      {
+        path: "club-management",
+        element: <Clubmanagement />,
+      },
+      {
+        path: "users-management",
+        element: (
+          <Adminroute>
+            <Usersmanagement />
+          </Adminroute>
+        ),
+      },
     ],
+  },
+
+  // 404 route (optional – চাইলে যোগ করো)
+  {
+    path: "*",
+    element: (
+      <div className="min-h-screen flex items-center justify-center text-3xl font-bold text-error">
+        404 - Page Not Found
+      </div>
+    ),
   },
 ]);

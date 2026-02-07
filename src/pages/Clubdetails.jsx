@@ -5,7 +5,7 @@ import Useaxiossecuire from '../hooks/Useaxiossecuire';
 const Clubdetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const axiossecure = Useaxiossecuire();
+  const axiosSecure = Useaxiossecuire();
 
   const [club, setClub] = useState(null);
   const [events, setEvents] = useState([]);
@@ -14,10 +14,11 @@ const Clubdetails = () => {
   useEffect(() => {
     const fetchClubDetails = async () => {
       try {
-        const clubRes = await axiossecure.get(`/clubs/${id}`);
+        const [clubRes, eventsRes] = await Promise.all([
+          axiosSecure.get(`/clubs/${id}`),
+          axiosSecure.get(`/clubs/${id}/events`)
+        ]);
         setClub(clubRes.data);
-
-        const eventsRes = await axiossecure.get(`/clubs/${id}/events`);
         setEvents(eventsRes.data);
       } catch (err) {
         console.error('Error fetching club details:', err);
@@ -26,7 +27,7 @@ const Clubdetails = () => {
       }
     };
     fetchClubDetails();
-  }, [id, axiossecure]);
+  }, [id, axiosSecure]);
 
   if (loading) {
     return (
@@ -46,6 +47,9 @@ const Clubdetails = () => {
       </div>
     );
   }
+
+  // শুধু clubpayment ফিল্ড দেখা হচ্ছে – paymentStatus ignore করা হয়েছে
+  const isPaid = club.clubpayment === 'paid';
 
   return (
     <div className="min-h-screen bg-base-200/40">
@@ -79,30 +83,34 @@ const Clubdetails = () => {
               <div className="badge badge-lg bg-info/80 text-white border-none px-4 py-3">
                 {club.status || 'Pending'}
               </div>
+              {isPaid && (
+                <div className="badge badge-lg bg-success/90 text-white border-none px-4 py-3">
+                  ✓ Member
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left - About & Info */}
+          {/* Left - About & Events */}
           <div className="lg:col-span-2 space-y-8">
             <div className="card bg-base-100 shadow-xl border border-base-200">
               <div className="card-body p-6 md:p-8">
                 <h2 className="card-title text-3xl font-bold mb-4">About This Club</h2>
                 <p className="text-base-content/80 leading-relaxed text-lg">
-                  {club.description}
+                  {club.description || 'No description available.'}
                 </p>
               </div>
             </div>
 
-            {/* Upcoming Events */}
             <div className="card bg-base-100 shadow-xl border border-base-200">
               <div className="card-body p-6 md:p-8">
                 <h2 className="card-title text-3xl font-bold mb-6">Upcoming Events</h2>
                 {events.length === 0 ? (
                   <div className="alert alert-info shadow-lg">
-                    <span>No upcoming events scheduled for this club yet.</span>
+                    <span>No upcoming events scheduled yet.</span>
                   </div>
                 ) : (
                   <div className="grid gap-6 md:grid-cols-2">
@@ -131,11 +139,11 @@ const Clubdetails = () => {
                             </p>
                             <p className="flex items-center gap-2">
                               <span className="badge badge-outline badge-sm">Location</span>
-                              {event.location}
+                              {event.location || 'TBA'}
                             </p>
                             <p className="flex items-center gap-2">
                               <span className="badge badge-outline badge-sm">Type</span>
-                              {event.eventType}
+                              {event.eventType || 'General'}
                             </p>
                           </div>
                           <div className="card-actions mt-6">
@@ -152,32 +160,45 @@ const Clubdetails = () => {
             </div>
           </div>
 
-          {/* Right - Sidebar (Membership Info) */}
+          {/* Right - Membership Sidebar */}
           <div className="space-y-6">
             <div className="card bg-base-100 shadow-xl border border-base-200 sticky top-8">
               <div className="card-body p-6">
                 <h3 className="text-2xl font-bold mb-4">Membership</h3>
-                <div className="stats shadow bg-base-200 stats-vertical lg:stats-horizontal">
+
+                <div className="stats shadow bg-base-200 stats-vertical lg:stats-horizontal w-full">
                   <div className="stat place-items-center">
                     <div className="stat-title">Annual Fee</div>
-                    <div className="stat-value text-primary">${club.membershipFee}</div>
+                    <div className="stat-value text-primary">${club.membershipFee || '—'}</div>
                     <div className="stat-desc">per year</div>
                   </div>
                   <div className="stat place-items-center">
                     <div className="stat-title">Members</div>
-                    <div className="stat-value text-secondary">{club.memberCount || 85}</div>
-                    <div className="stat-desc">active hikers</div>
+                    <div className="stat-value text-secondary">
+                      {club.memberCount || '—'}
+                    </div>
+                    <div className="stat-desc">joined</div>
                   </div>
                 </div>
+
                 <div className="mt-6">
-                  <button
-                    onClick={() => navigate(`/club/${id}/payment`)}
-                    className="btn btn-secondary btn-lg w-full"
-                  >
-                    Join for ${club.membershipFee}
-                  </button>
+                  {isPaid ? (
+                    <div className="alert alert-success">
+                      <span>Already a Member ✓ Payment Completed</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => navigate(`/club/${id}/payment`)}
+                      className="btn btn-secondary btn-lg w-full"
+                    >
+                      Join for ${club.membershipFee || '—'}
+                    </button>
+                  )}
+
                   <p className="text-center text-xs text-base-content/60 mt-3">
-                    Approved club • Safe & friendly community
+                    {isPaid
+                      ? 'Payment completed • Welcome to the community!'
+                      : 'Approved club • Safe & friendly community'}
                   </p>
                 </div>
               </div>
