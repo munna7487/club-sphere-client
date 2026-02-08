@@ -41,20 +41,22 @@ const Showevent = () => {
   }, [searchValue, refetch]);
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8">
       {/* Header + Search */}
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4 sm:gap-0">
         <div>
-          <h4 className="text-4xl font-bold mb-2">Upcoming Events</h4>
-          <h2 className="text-xl text-gray-600">
+          <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2">
+            Upcoming Events
+          </h4>
+          <h2 className="text-base sm:text-lg lg:text-xl text-gray-600">
             Don't miss out on what's happening
           </h2>
         </div>
 
-        <div>
+        <div className="w-full sm:w-auto">
           <input
             type="search"
-            className="input input-bordered w-64"
+            className="input input-bordered w-full sm:w-64 lg:w-80"
             placeholder="Search by event title..."
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
@@ -63,31 +65,33 @@ const Showevent = () => {
       </div>
 
       {/* Title with count */}
-      <h2 className="text-3xl font-bold mb-6">
+      <h2 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">
         All Events ({events.length})
       </h2>
 
       {/* Loading indicator */}
       {isFetching && (
-        <p className="text-sm text-gray-500 mb-6">Searching events...</p>
+        <p className="text-sm text-gray-500 mb-4 sm:mb-6">Searching events...</p>
       )}
 
       {/* No events found */}
       {events.length === 0 && !isFetching ? (
-        <p className="text-center text-gray-500 py-10">
+        <p className="text-center text-gray-500 py-10 text-base sm:text-lg">
           No events found
         </p>
       ) : (
-        /* Events grid */
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        /* Events grid - responsive columns */
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {events.map((event) => (
             <div
               key={event._id}
-              className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
+              className="card bg-base-100 shadow-md sm:shadow-xl hover:shadow-2xl transition-shadow duration-300 cursor-pointer"
               onClick={() => navigate(`/event/${event._id}`)}
             >
-              <div className="card-body">
-                <h2 className="card-title line-clamp-2">{event.title}</h2>
+              <div className="card-body p-4 sm:p-6">
+                <h2 className="card-title text-lg sm:text-xl line-clamp-2">
+                  {event.title}
+                </h2>
 
                 <p className="text-sm text-gray-500">{event.clubName}</p>
 
@@ -98,19 +102,19 @@ const Showevent = () => {
                   <p>🕒 {new Date(event.dateTime).toLocaleString()}</p>
                 </div>
 
-                <p className="font-semibold mt-2">
+                <p className="font-semibold mt-2 text-base sm:text-lg">
                   {event.eventType === 'Free'
                     ? 'Free'
                     : `$${event.price}`}
                 </p>
 
-                <div className="card-actions justify-end mt-4">
+                <div className="card-actions justify-end mt-3 sm:mt-4">
                   <button
                     onClick={(e) => {
                       e.stopPropagation(); // prevent card click when button is clicked
                       navigate(`/event/${event._id}`);
                     }}
-                    className="btn btn-primary btn-sm"
+                    className="btn btn-primary btn-sm sm:btn-md"
                   >
                     Details
                   </button>

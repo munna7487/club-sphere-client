@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Useaxiossecuire from '../hooks/Useaxiossecuire';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const Createclub = () => {
   const axiossecure = Useaxiossecuire();
-
   const [searchText, setSearchText] = useState('');
   const [selectedClubName, setSelectedClubName] = useState('All');
 
@@ -34,23 +33,16 @@ const Createclub = () => {
     );
   }
 
-  // Get unique club names for dropdown
-  const clubNames = clubs
-    .map(club => club.clubName?.trim())
-    .filter(Boolean); // remove empty/falsey values
+  // Unique club names for dropdown
+  const clubNames = clubs.map(club => club.clubName?.trim()).filter(Boolean);
 
-  // Filter logic
+  // Filter clubs
   let filteredClubs = clubs.filter(club => {
-    // Search filter (on club name)
     const matchesSearch = club.clubName
       ?.toLowerCase()
       .includes(searchText.toLowerCase().trim());
-
-    // Club selection filter
     const matchesSelected =
-      selectedClubName === 'All' ||
-      club.clubName === selectedClubName;
-
+      selectedClubName === 'All' || club.clubName === selectedClubName;
     return matchesSearch && matchesSelected;
   });
 
@@ -67,9 +59,8 @@ const Createclub = () => {
           </p>
         </div>
 
-        {/* Search + Club Name Dropdown */}
+        {/* Search + Dropdown */}
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-          {/* Search Input */}
           <label className="input input-bordered flex items-center gap-2 w-full sm:w-64">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +83,6 @@ const Createclub = () => {
             />
           </label>
 
-          {/* Club Name Dropdown */}
           <div className="dropdown dropdown-end w-full sm:w-auto">
             <div
               tabIndex={0}
@@ -118,15 +108,11 @@ const Createclub = () => {
               className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-64 max-h-80 overflow-auto z-50"
             >
               <li>
-                <button onClick={() => setSelectedClubName('All')}>
-                  All
-                </button>
+                <button onClick={() => setSelectedClubName('All')}>All</button>
               </li>
               {clubNames.map((name) => (
                 <li key={name}>
-                  <button onClick={() => setSelectedClubName(name)}>
-                    {name}
-                  </button>
+                  <button onClick={() => setSelectedClubName(name)}>{name}</button>
                 </li>
               ))}
             </ul>
@@ -134,12 +120,10 @@ const Createclub = () => {
         </div>
       </div>
 
-      {/* Clubs Display */}
+      {/* Clubs Grid */}
       {filteredClubs.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-xl text-base-content/70">
-            No clubs found
-          </p>
+          <p className="text-xl text-base-content/70">No clubs found</p>
           <p className="mt-2 text-sm">
             {searchText || selectedClubName !== 'All'
               ? 'Try different search or select another club'
@@ -151,22 +135,25 @@ const Createclub = () => {
           {filteredClubs.map((club) => (
             <div
               key={club._id}
-              className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 border border-base-200"
+              className="card bg-base-100 shadow-md hover:shadow-xl transition-all duration-300 border border-base-200 rounded-lg overflow-hidden"
             >
               <figure className="relative h-48 overflow-hidden">
                 <img
                   src={club.bannerUrl || 'https://via.placeholder.com/400x200?text=Club+Banner'}
                   alt={club.clubName}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                 />
               </figure>
               <div className="card-body p-5">
-                <h2 className="card-title text-xl line-clamp-2">
-                  {club.clubName}
-                </h2>
+                <h2 className="card-title text-xl line-clamp-2">{club.clubName}</h2>
 
-                <p className="text-sm text-base-content/70 line-clamp-3 min-h-[4.5rem]">
-                  {club.description || 'No description available'}
+                {/* Description limited to 40 chars */}
+                <p className="text-sm text-base-content/70 min-h-[4.5rem]">
+                  {club.description
+                    ? club.description.length > 40
+                      ? club.description.slice(0, 40) + '...'
+                      : club.description
+                    : 'No description available'}
                 </p>
 
                 <div className="flex flex-wrap gap-2 mt-3">
@@ -184,13 +171,13 @@ const Createclub = () => {
                   </p>
                   <div className="badge badge-success badge-outline">Approved</div>
                 </div>
-                <div>
-                  <Link to={`/club/${club._id}`}>
-  <div className="card ... btn"> Card details
-    {/* card content */}
-  </div>
-</Link>
-                </div>
+
+                <Link
+                  to={`/club/${club._id}`}
+                  className="mt-3 btn btn-primary w-full hover:bg-cyan-600 transition-colors"
+                >
+                  View Club
+                </Link>
               </div>
             </div>
           ))}

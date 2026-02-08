@@ -40,20 +40,40 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/*  Connect (FIXED ICONS) */}
+          {/* Connect (এখানে আসল লিঙ্ক দাও) */}
           <div>
             <h3 className="text-white font-semibold mb-4 uppercase text-sm">Connect</h3>
             <div className="flex gap-5 text-2xl text-gray-300">
-              <a href="#" className="hover:text-white transition">
+              <a 
+                href="https://twitter.com/yourusername" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-white transition"
+              >
                 <FaTwitter />
               </a>
-              <a href="#" className="hover:text-white transition">
+              <a 
+                href="https://github.com/yourusername" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-white transition"
+              >
                 <FaGithub />
               </a>
-              <a href="#" className="hover:text-white transition">
+              <a 
+                href="https://www.linkedin.com/company/yourcompany OR https://www.linkedin.com/in/yourusername" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-white transition"
+              >
                 <FaLinkedin />
               </a>
-              <a href="#" className="hover:text-white transition">
+              <a 
+                href="https://www.instagram.com/yourusername" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="hover:text-white transition"
+              >
                 <FaInstagram />
               </a>
             </div>

@@ -1,13 +1,14 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import Useaxiossecuire from '../../hooks/Useaxiossecuire';
 
 const Showdetailsevent = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const axiosSecure = Useaxiossecuire();
 
-  const { data: event, isLoading, error } = useQuery({
+  const { data: event, isLoading, error, refetch } = useQuery({
     queryKey: ['event', id],
     queryFn: async () => {
       const res = await axiosSecure.get(`/events/${id}`);
@@ -46,6 +47,15 @@ const Showdetailsevent = () => {
     );
   }
 
+  const handleRegisterClick = () => {
+    navigate(`/event-payment/${id}`);
+  };
+
+  // Number কনভার্ট করে নিরাপদে হিসাব
+  const maxAtt = Number(event.maxAttendees) || 0;
+  const currentAtt = Number(event.attendees) || 0;
+  const spotsLeft = maxAtt - currentAtt;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/40 to-zinc-100 pb-16">
       {/* Back Button */}
@@ -62,14 +72,17 @@ const Showdetailsevent = () => {
       {/* Main Content */}
       <div className="max-w-5xl mx-auto px-5 sm:px-8">
         <div className="bg-white rounded-3xl shadow-xl border border-slate-200/70 overflow-hidden">
-          {/* Hero / Header Section */}
+          {/* Hero Section */}
           <div className="relative px-8 pt-12 pb-16 md:px-12 lg:px-16 bg-gradient-to-br from-purple-600/10 via-indigo-600/5 to-transparent">
             {/* Price Badge */}
             <div className="absolute top-8 right-8">
               <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xl shadow-lg">
-                ${event.price || 0}
-                {event.eventType === 'Free' && (
-                  <span className="ml-2 text-yellow-300 font-extrabold">FREE</span>
+                {event.eventType?.toLowerCase() === 'free' ? (
+                  <span>FREE</span>
+                ) : (
+                  <>
+                    ${event.price || 0}
+                  </>
                 )}
               </div>
             </div>
@@ -82,9 +95,7 @@ const Showdetailsevent = () => {
             {/* Meta Info */}
             <div className="grid md:grid-cols-3 gap-6 mb-10">
               <div className="flex items-center gap-4 bg-white/70 backdrop-blur-sm px-5 py-4 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-3xl flex-shrink-0">
-                  📅
-                </div>
+                <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-3xl flex-shrink-0">📅</div>
                 <div>
                   <p className="text-sm text-slate-500 font-medium">Date & Time</p>
                   <p className="text-lg font-semibold text-slate-800">
@@ -94,9 +105,7 @@ const Showdetailsevent = () => {
               </div>
 
               <div className="flex items-center gap-4 bg-white/70 backdrop-blur-sm px-5 py-4 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-3xl flex-shrink-0">
-                  📍
-                </div>
+                <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-3xl flex-shrink-0">📍</div>
                 <div>
                   <p className="text-sm text-slate-500 font-medium">Location</p>
                   <p className="text-lg font-semibold text-slate-800">{event.location}</p>
@@ -104,13 +113,11 @@ const Showdetailsevent = () => {
               </div>
 
               <div className="flex items-center gap-4 bg-white/70 backdrop-blur-sm px-5 py-4 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-3xl flex-shrink-0">
-                  👥
-                </div>
+                <div className="w-14 h-14 rounded-xl bg-purple-100 flex items-center justify-center text-3xl flex-shrink-0">👥</div>
                 <div>
                   <p className="text-sm text-slate-500 font-medium">Attendees</p>
                   <p className="text-lg font-semibold text-slate-800">
-                    {event.attendees || 0} / {event.maxAttendees || '?'}
+                    {currentAtt} / {maxAtt || '∞'}
                   </p>
                 </div>
               </div>
@@ -118,29 +125,21 @@ const Showdetailsevent = () => {
 
             {/* Organizer */}
             <div className="inline-flex items-center gap-4 bg-white/80 backdrop-blur-sm px-6 py-4 rounded-2xl border border-slate-200 shadow-sm">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 text-white flex items-center justify-center text-3xl">
-                🏢
-              </div>
+              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 text-white flex items-center justify-center text-3xl">🏢</div>
               <div>
                 <p className="text-sm text-slate-500">Organized by</p>
-                <p className="text-xl font-bold text-slate-900">
-                  {event.clubName || 'Unknown Club'}
-                </p>
+                <p className="text-xl font-bold text-slate-900">{event.clubName || 'Unknown Club'}</p>
               </div>
             </div>
           </div>
 
-          {/* Content Section */}
+          {/* About & Register */}
           <div className="p-8 md:p-12 lg:p-16">
-            {/* About */}
             <div className="mb-14">
               <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">About This Event</h3>
-              <p className="text-lg text-slate-700 leading-relaxed whitespace-pre-line">
-                {event.description}
-              </p>
+              <p className="text-lg text-slate-700 leading-relaxed whitespace-pre-line">{event.description}</p>
             </div>
 
-            {/* Registration Box */}
             <div className="bg-gradient-to-br from-slate-50 to-purple-50/30 rounded-3xl p-8 md:p-10 border border-slate-200 shadow-inner">
               <h3 className="text-3xl md:text-4xl font-bold text-slate-900 mb-8">Register Now</h3>
 
@@ -148,7 +147,9 @@ const Showdetailsevent = () => {
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
                   <p className="text-2xl">
                     <span className="font-bold text-slate-800">Fee:</span>{' '}
-                    <span className="text-purple-700 font-extrabold">${event.price || 0}</span>
+                    <span className="text-purple-700 font-extrabold">
+                      {event.eventType?.toLowerCase() === 'free' ? 'FREE' : `$${event.price || 0}`}
+                    </span>
                   </p>
                 </div>
 
@@ -156,14 +157,26 @@ const Showdetailsevent = () => {
                   <p className="text-2xl">
                     <span className="font-bold text-slate-800">Spots left:</span>{' '}
                     <span className="text-indigo-700 font-extrabold">
-                      {event.maxAttendees - (event.attendees || 0)} / {event.maxAttendees || '?'}
+                      {spotsLeft >= 0 ? spotsLeft : '∞'} / {maxAtt || '∞'}
                     </span>
                   </p>
                 </div>
               </div>
 
-              <button className="btn w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xl py-7 rounded-2xl shadow-xl transform hover:scale-[1.02] transition-all duration-300 border-none">
-                Register for ${event.price || 0}
+              <button
+                onClick={handleRegisterClick}
+                disabled={spotsLeft <= 0 && maxAtt > 0}
+                className={`btn w-full font-bold text-xl py-7 rounded-2xl shadow-xl transform hover:scale-[1.02] transition-all duration-300 border-none ${
+                  spotsLeft <= 0 && maxAtt > 0
+                    ? 'btn-disabled bg-gray-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white'
+                }`}
+              >
+                {event.eventType?.toLowerCase() === 'free'
+                  ? 'Register Free'
+                  : spotsLeft <= 0 && maxAtt > 0
+                  ? 'Event Full'
+                  : `Register & Pay $${event.price}`}
               </button>
             </div>
           </div>

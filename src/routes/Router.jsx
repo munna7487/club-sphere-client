@@ -28,6 +28,7 @@ import Showdetailsevent from "../pages/shared/Showdetailsevent";
 import Clubpayment from "../pages/Auth/Dashboard/payment/Clubpayment";
 import ClubPaymentSuccess from "../pages/Auth/Dashboard/payment/ClubPaymentSuccess";
 import Clubpaymentcancelled from "../pages/Auth/Dashboard/payment/Clubpaymentcancelled";
+import Eventpaymentcancelled from "../pages/create/Eventpaymentcancelled";
 
 export const router = createBrowserRouter([
   {
@@ -86,6 +87,10 @@ export const router = createBrowserRouter([
         path: "event-payment-success",
         element: <EventPaymentSuccess />,
       },
+//       {
+//   path: "event-payment-cancelled",
+//   element: <Eventpaymentcancelled />,
+// },
       {
         path: "club-payment-success",
         element: <ClubPaymentSuccess />,
@@ -136,6 +141,10 @@ export const router = createBrowserRouter([
         path: "payment-success",
         element: <PaymentSuccess />,
       },
+      {
+  path: "event-payment-cancelled",
+  element: <Eventpaymentcancelled />,
+},
       {
         path: "payment-cancelled",
         element: <Paymentcancelled />,

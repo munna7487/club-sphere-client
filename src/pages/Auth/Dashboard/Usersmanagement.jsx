@@ -19,7 +19,7 @@ const Usersmanagement = () => {
   });
 
   if (role !== 'admin') {
-    return <p className="text-red-500">Access Denied</p>;
+    return <p className="text-red-500 text-center py-8 text-lg">Access Denied</p>;
   }
 
   const updateRole = (user, newRole) => {
@@ -39,60 +39,63 @@ const Usersmanagement = () => {
   };
 
   return (
-    <table className="table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>User</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {users.map((u, i) => (
-          <tr key={u._id}>
-            <td>{i + 1}</td>
-            <td>{u.displayName}</td>
-            <td>{u.email}</td>
-            <td className="font-semibold">{u.role}</td>
-
-            <td className="flex gap-2">
-              {u.role !== 'admin' && (
-                <button
-                  onClick={() => updateRole(u, 'admin')}
-                  className="btn btn-success btn-sm"
-                  title="Make Admin"
-                >
-                  <FaUserShield />
-                </button>
-              )}
-
-              {u.role !== 'manager' && (
-                <button
-                  onClick={() => updateRole(u, 'manager')}
-                  className="btn btn-info btn-sm"
-                  title="Make Manager"
-                >
-                  M
-                </button>
-              )}
-
-              {u.role !== 'user' && (
-                <button
-                  onClick={() => updateRole(u, 'user')}
-                  className="btn btn-error btn-sm"
-                  title="Make User"
-                >
-                  <FaUserSlash />
-                </button>
-              )}
-            </td>
+    <div className="overflow-x-auto">
+      <table className="table table-zebra w-full">
+        {/* head */}
+        <thead>
+          <tr className="text-sm sm:text-base">
+            <th className="w-12 sm:w-16">#</th>
+            <th>User</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th className="text-center">Action</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+
+        <tbody className="text-sm sm:text-base">
+          {users.map((u, i) => (
+            <tr key={u._id} className="hover">
+              <td className="text-center">{i + 1}</td>
+              <td className="font-medium">{u.displayName || '—'}</td>
+              <td className="break-all sm:break-normal">{u.email}</td>
+              <td className="font-semibold capitalize">{u.role}</td>
+
+              <td className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                {u.role !== 'admin' && (
+                  <button
+                    onClick={() => updateRole(u, 'admin')}
+                    className="btn btn-success btn-xs sm:btn-sm"
+                    title="Make Admin"
+                  >
+                    <FaUserShield className="text-base" />
+                  </button>
+                )}
+
+                {u.role !== 'manager' && (
+                  <button
+                    onClick={() => updateRole(u, 'manager')}
+                    className="btn btn-info btn-xs sm:btn-sm text-white"
+                    title="Make Manager"
+                  >
+                    M
+                  </button>
+                )}
+
+                {u.role !== 'user' && (
+                  <button
+                    onClick={() => updateRole(u, 'user')}
+                    className="btn btn-error btn-xs sm:btn-sm"
+                    title="Make User"
+                  >
+                    <FaUserSlash className="text-base" />
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

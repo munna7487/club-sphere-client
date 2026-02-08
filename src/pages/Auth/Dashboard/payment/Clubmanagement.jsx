@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Swal from 'sweetalert2';
 import Useaxiossecuire from '../../../../hooks/Useaxiossecuire';
 
 const Clubmanagement = () => {
   const axiossecure = Useaxiossecuire();
+  const [approvedIds, setApprovedIds] = useState([]); // optimistic UI
+  const [loadingIds, setLoadingIds] = useState([]);   // approve button loading
 
   const { data: clubs = [], refetch, isLoading } = useQuery({
     queryKey: ['paid-clubs'],
@@ -14,31 +16,37 @@ const Clubmanagement = () => {
     }
   });
 
-  // APPROVE
+  // ================= APPROVE =================
   const handleApprove = (club) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `Approve club "${club.clubName}" ?`,
+      text: `Approve club "${club.clubName}"?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, approve',
     }).then((result) => {
       if (result.isConfirmed) {
-        axiossecure.patch(`/admin/clubs/approve/${club._id}`).then((res) => {
-          if (res.data.modifiedCount > 0) {
-            Swal.fire('Approved!', 'Club approved successfully', 'success');
-            refetch();
-          }
-        });
+        setLoadingIds((prev) => [...prev, club._id]); // loading state
+        axiossecure.patch(`/admin/clubs/approve/${club._id}`)
+          .then((res) => {
+            if (res.data.modifiedCount > 0) {
+              Swal.fire('Approved!', 'Club approved successfully', 'success');
+              setApprovedIds((prev) => [...prev, club._id]); // optimistic UI disable
+              refetch(); // backend fresh data
+            }
+          })
+          .finally(() => {
+            setLoadingIds((prev) => prev.filter(id => id !== club._id));
+          });
       }
     });
   };
 
-  // REJECT
+  // ================= REJECT =================
   const handleReject = (club) => {
     Swal.fire({
       title: 'Are you sure?',
-      text: `Reject club "${club.clubName}" ?`,
+      text: `Reject club "${club.clubName}"?`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Yes, reject',
@@ -60,56 +68,59 @@ const Clubmanagement = () => {
 
   return (
     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {clubs.map((club) => (
-        <div
-          key={club._id}
-          className="card bg-base-100 shadow-md hover:shadow-xl transition duration-300"
-        >
-          {/* IMAGE */}
-          <figure className="h-48 overflow-hidden">
-            <img
-              src={club.bannerUrl}
-              alt={club.clubName}
-              className="h-full w-full object-cover"
-            />
-          </figure>
+      {clubs.map((club) => {
+        const isApproved = club.status === 'approved' || approvedIds.includes(club._id);
+        const isLoading = loadingIds.includes(club._id);
 
-          {/* BODY */}
-          <div className="card-body p-5">
-            <h2 className="card-title text-lg">{club.clubName}</h2>
+        return (
+          <div
+            key={club._id}
+            className="card bg-base-100 shadow-md hover:shadow-xl transition duration-300"
+          >
+            {/* IMAGE */}
+            <figure className="h-48 overflow-hidden">
+              <img
+                src={club.bannerUrl}
+                alt={club.clubName}
+                className="h-full w-full object-cover"
+              />
+            </figure>
 
-            <p className="text-sm text-gray-600 line-clamp-3">
-              {club.description}
-            </p>
+            {/* BODY */}
+            <div className="card-body p-5">
+              <h2 className="card-title text-lg">{club.clubName}</h2>
+              <p className="text-sm text-gray-600 line-clamp-3">{club.description}</p>
 
-            <div className="flex flex-wrap gap-2 mt-2 text-sm">
-              <span className="badge badge-outline">{club.category}</span>
-              <span className="badge badge-outline">{club.location}</span>
-            </div>
+              <div className="flex flex-wrap gap-2 mt-2 text-sm">
+                <span className="badge badge-outline">{club.category}</span>
+                <span className="badge badge-outline">{club.location}</span>
+              </div>
 
-            <p className="mt-2 font-semibold text-primary">
-              Fee: ${club.membershipFee}
-            </p>
+              <p className="mt-2 font-semibold text-primary">
+                Fee: ${club.membershipFee}
+              </p>
 
-            {/* ACTIONS */}
-            <div className="card-actions justify-end mt-4">
-              <button
-                onClick={() => handleApprove(club)}
-                className="btn btn-success btn-sm"
-              >
-                Approve
-              </button>
+              {/* ACTIONS */}
+              <div className="card-actions justify-end mt-4">
+                <button
+                  onClick={() => handleApprove(club)}
+                  className="btn btn-success btn-sm"
+                  disabled={isApproved || isLoading}
+                >
+                  {isLoading ? 'Approving...' : 'Approve'}
+                </button>
 
-              <button
-                onClick={() => handleReject(club)}
-                className="btn btn-error btn-sm"
-              >
-                Reject
-              </button>
+                <button
+                  onClick={() => handleReject(club)}
+                  className="btn btn-error btn-sm"
+                >
+                  Reject
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
