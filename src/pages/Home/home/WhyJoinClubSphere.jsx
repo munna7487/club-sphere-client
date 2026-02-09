@@ -2,7 +2,8 @@ import { FaUsers, FaBolt, FaShieldAlt, FaHeart } from "react-icons/fa";
 
 const WhyJoinClubSphere = () => {
   return (
-    <section className="py-20 bg-gradient-to-b from-indigo-50 to-purple-50">
+    <section className="py-20 bg-gradient-to-b
+     from-indigo-50 to-purple-50 my-4 rounded-2xl">
       <div className="max-w-6xl mx-auto px-4">
         
         {/* Heading */}

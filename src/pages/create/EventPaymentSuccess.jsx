@@ -8,13 +8,13 @@ const EventPaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const axiosSecure = Useaxiossecuire();
   const navigate = useNavigate();
-  const { user, loading: authLoading, logout } = UseAuth(); // logout যোগ করো
+  const { user, loading: authLoading, logout } = UseAuth(); 
 
   const sessionId = searchParams.get("session_id");
   const eventId = searchParams.get("eventId");
 
   useEffect(() => {
-    if (authLoading) return; // auth লোড না হওয়া পর্যন্ত অপেক্ষা
+    if (authLoading) return; 
 
     console.log("[SUCCESS PAGE] User status:", user ? user.email : "NO USER");
 
@@ -48,10 +48,10 @@ const EventPaymentSuccess = () => {
       } catch (err) {
         console.error("[SUCCESS PAGE] Confirmation error:", err);
 
-        // যদি 401 আসে তাহলে logout করো না — শুধু টোস্ট দেখাও
+        
         if (err.response?.status === 401 || err.response?.status === 403) {
           toast.error("Authentication issue. Please try logging in again.");
-          // logout();  // ← এটা কমেন্ট করে রাখো
+     
           navigate("/login");
         } else {
           toast.error("Failed to confirm payment. Please contact support.");

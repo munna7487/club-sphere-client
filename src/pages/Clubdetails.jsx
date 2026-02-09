@@ -147,9 +147,16 @@ const Clubdetails = () => {
                             </p>
                           </div>
                           <div className="card-actions mt-6">
-                            <button className="btn btn-primary btn-block">
+                            {/* <button className="btn btn-primary btn-block">
                               Register Now
-                            </button>
+                            </button> */}
+                            <button
+  onClick={() => navigate(`/event/${event._id}`)}
+  className="btn btn-primary btn-block group"
+>
+  View & Register
+  <span className="group-hover:translate-x-1 transition-transform">→</span>
+</button>
                           </div>
                         </div>
                       </div>

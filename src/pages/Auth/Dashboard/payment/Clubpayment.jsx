@@ -42,12 +42,12 @@ const Clubpayment = () => {
     };
 
     try {
-      
+
       const res = await axiosSecure.post(
-        'http://localhost:3000/create-club-checkout-session',
+        'https://club-sphere-server-flax.vercel.app/create-club-checkout-session',
         paymentInfo
       );
-console.log(res.data)
+      console.log(res.data)
       if (res.data?.url) {
         window.location.href = res.data.url;
       } else {

@@ -15,7 +15,7 @@ const EventPayment = () => {
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
 
-  // Event details লোড করা
+  // Event 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
@@ -31,7 +31,7 @@ const EventPayment = () => {
     fetchEvent();
   }, [id, axiosSecure]);
 
-  // Already registered কিনা চেক করা
+  // Already 
   useEffect(() => {
     if (!user?.email || !id) return;
 
@@ -72,7 +72,7 @@ const EventPayment = () => {
         if (res.data.success) {
           toast.success("Successfully registered for free event!");
           setAlreadyRegistered(true);
-          // অপশনাল: event details আবার লোড করা যাতে attendees আপডেট দেখায়
+        
           const updatedEvent = await axiosSecure.get(`/events/${id}`);
           setEvent(updatedEvent.data);
         }

@@ -3,9 +3,9 @@ import { Link } from "react-router";
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden my-4.5">
       {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-50 via-white to-yellow-50"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-200 via-white to-yellow-200  rounded-2xl"></div>
 
       <div className="relative max-w-6xl mx-auto px-6 py-32 text-center">
         {/* Heading */}
@@ -24,12 +24,12 @@ const Hero = () => {
 
         {/* Buttons */}
         <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-          <button className="btn bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-none px-8">
+          <Link Link to="/club" className="btn bg-gradient-to-r from-purple-500 to-indigo-500 text-white border-none px-8">
             Explore Clubs →
-          </button>
-          <Link to="/create" className="btn btn-outline px-8">
+          </Link >
+          <button className="btn btn-outline px-8">
             Create a Club
-          </Link>
+          </button>
         </div>
 
         {/* Divider */}
