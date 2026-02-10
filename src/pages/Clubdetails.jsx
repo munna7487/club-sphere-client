@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Useaxiossecuire from '../hooks/Useaxiossecuire';
+import Useaxiossecuire from '../hooks/Useaxiossecuire'; // adjust path
+import { toast } from 'react-hot-toast';
 
 const Clubdetails = () => {
   const { id } = useParams();
@@ -9,23 +10,29 @@ const Clubdetails = () => {
 
   const [club, setClub] = useState(null);
   const [events, setEvents] = useState([]);
+  const [isMember, setIsMember] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchClubDetails = async () => {
       try {
-        const [clubRes, eventsRes] = await Promise.all([
+        const [clubRes, eventsRes, memberRes] = await Promise.all([
           axiosSecure.get(`/clubs/${id}`),
-          axiosSecure.get(`/clubs/${id}/events`)
+          axiosSecure.get(`/clubs/${id}/events`),
+          axiosSecure.get(`/clubs/${id}/is-member`)
         ]);
+
         setClub(clubRes.data);
         setEvents(eventsRes.data);
+        setIsMember(memberRes.data.isMember || false);
       } catch (err) {
         console.error('Error fetching club details:', err);
+        toast.error('Failed to load club information');
       } finally {
         setLoading(false);
       }
     };
+
     fetchClubDetails();
   }, [id, axiosSecure]);
 
@@ -48,13 +55,10 @@ const Clubdetails = () => {
     );
   }
 
-  // শুধু clubpayment ফিল্ড দেখা হচ্ছে – paymentStatus ignore করা হয়েছে
-  const isPaid = club.clubpayment === 'paid';
-
   return (
     <div className="min-h-screen bg-base-200/40">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
-        {/* Hero / Banner Section */}
+        {/* Banner / Hero */}
         <div className="relative rounded-2xl overflow-hidden shadow-2xl mb-10 h-80 md:h-96 lg:h-[28rem]">
           <img
             src={club.bannerUrl || 'https://via.placeholder.com/1200x500?text=Club+Banner'}
@@ -83,7 +87,7 @@ const Clubdetails = () => {
               <div className="badge badge-lg bg-info/80 text-white border-none px-4 py-3">
                 {club.status || 'Pending'}
               </div>
-              {isPaid && (
+              {isMember && (
                 <div className="badge badge-lg bg-success/90 text-white border-none px-4 py-3">
                   ✓ Member
                 </div>
@@ -147,16 +151,13 @@ const Clubdetails = () => {
                             </p>
                           </div>
                           <div className="card-actions mt-6">
-                            {/* <button className="btn btn-primary btn-block">
-                              Register Now
-                            </button> */}
                             <button
-  onClick={() => navigate(`/event/${event._id}`)}
-  className="btn btn-primary btn-block group"
->
-  View & Register
-  <span className="group-hover:translate-x-1 transition-transform">→</span>
-</button>
+                              onClick={() => navigate(`/event/${event._id}`)}
+                              className="btn btn-primary btn-block group"
+                            >
+                              View & Register
+                              <span className="group-hover:translate-x-1 transition-transform">→</span>
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -182,15 +183,15 @@ const Clubdetails = () => {
                   <div className="stat place-items-center">
                     <div className="stat-title">Members</div>
                     <div className="stat-value text-secondary">
-                      {club.memberCount || '—'}
+                      {club.membernumber || 0}
                     </div>
                     <div className="stat-desc">joined</div>
                   </div>
                 </div>
 
                 <div className="mt-6">
-                  {isPaid ? (
-                    <div className="alert alert-success">
+                  {isMember ? (
+                    <div className="alert alert-success shadow-lg">
                       <span>Already a Member ✓ Payment Completed</span>
                     </div>
                   ) : (
@@ -203,7 +204,7 @@ const Clubdetails = () => {
                   )}
 
                   <p className="text-center text-xs text-base-content/60 mt-3">
-                    {isPaid
+                    {isMember
                       ? 'Payment completed • Welcome to the community!'
                       : 'Approved club • Safe & friendly community'}
                   </p>

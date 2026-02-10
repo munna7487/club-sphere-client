@@ -34,13 +34,14 @@ const Featuredclub = () => {
 
   return (
     <div className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br
-     from-pink-50 via-rose-100 to-orange-200 rounded-2xl">
+     from-pink-100 via-rose-100 to-orange-200 rounded-2xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-12 text-center text-gray-800">
+        <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-center text-gray-800">
           Featured Clubs
         </h2>
-
+         <h1 className='text-center my-6 text-2xl text-gray-500'>Explore our most popular communities. Whether you're into <br /> tech, arts, or sports, there's a place for you</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+         
           {featuredClubs.map((club) => (
             <div
               key={club._id}
