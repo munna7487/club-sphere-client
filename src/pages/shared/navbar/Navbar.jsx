@@ -61,7 +61,9 @@ const Navbar = () => {
             </div>
 
             {/* Logo */}
-            <img className="h-10 w-10 rounded-full" src={logos} alt="logo" />
+            <Link to="/">
+              <img className="h-10 w-10 rounded-full" src={logos} alt="logo" />
+            </Link>
           </div>
 
           {/* Navbar Center */}
