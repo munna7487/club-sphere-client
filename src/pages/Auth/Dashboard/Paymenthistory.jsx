@@ -58,7 +58,7 @@ const Paymenthistory = () => {
             No payments found
           </h3>
           <p className="text-gray-500 dark:text-gray-400">
-            You haven't made any payments yet.
+            You haven't created any clubs with payment yet.
           </p>
         </div>
       ) : (
@@ -88,17 +88,17 @@ const Paymenthistory = () => {
               <tbody className="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-800">
                 {payments.map((p) => (
                   <tr
-                    key={p._id}
+                    key={p._id || p.transactionid}  // ← change: _id না থাকলে transactionid use করো
                     className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-gray-900 dark:text-white">
-                        {p.clubname}
+                        {p.clubname || 'Unknown Club'}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-semibold text-green-600 dark:text-green-400">
-                        ${Number(p.amount).toFixed(2)}
+                        ${Number(p.amount || 0).toFixed(2)}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
@@ -107,6 +107,8 @@ const Paymenthistory = () => {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
                           })
                         : '—'}
                     </td>
@@ -118,11 +120,11 @@ const Paymenthistory = () => {
                             : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                         }`}
                       >
-                        {p.paymentstatus?.toUpperCase()}
+                        {p.paymentstatus?.toUpperCase() || 'UNKNOWN'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-mono">
-                      {p.transactionid?.slice(0, 8)}...
+                      {p.transactionid ? `${p.transactionid.slice(0, 8)}...` : 'N/A'}
                     </td>
                   </tr>
                 ))}
@@ -134,13 +136,13 @@ const Paymenthistory = () => {
           <div className="md:hidden divide-y divide-gray-200 dark:divide-gray-700">
             {payments.map((p) => (
               <div
-                key={p._id}
+                key={p._id || p.transactionid}  // ← change: key unique রাখার জন্য
                 className="p-5 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
                     <h3 className="font-medium text-gray-900 dark:text-white">
-                      {p.clubname}
+                      {p.clubname || 'Unknown Club'}
                     </h3>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                       {p.paidAt
@@ -159,18 +161,17 @@ const Paymenthistory = () => {
                         : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/40 dark:text-yellow-300'
                     }`}
                   >
-                    {p.paymentstatus}
+                    {p.paymentstatus?.toUpperCase() || 'UNKNOWN'}
                   </span>
                 </div>
-
                 <div className="flex justify-between items-center text-sm">
                   <div className="text-gray-600 dark:text-gray-300">
                     <span className="font-semibold text-green-600 dark:text-green-400">
-                      ${Number(p.amount).toFixed(2)}
+                      ${Number(p.amount || 0).toFixed(2)}
                     </span>
                   </div>
                   <div className="text-gray-500 dark:text-gray-400 font-mono text-xs">
-                    {p.transactionid?.slice(0, 19)}...
+                    {p.transactionid ? `${p.transactionid.slice(0, 19)}...` : 'N/A'}
                   </div>
                 </div>
               </div>
